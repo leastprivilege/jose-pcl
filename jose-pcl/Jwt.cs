@@ -15,12 +15,12 @@ namespace JosePCL
         static Jwt()
         {
             RegisterJws(new Plaintext());
-//            RegisterJws(new HmacUsingSha(256));
-//            RegisterJws(new HmacUsingSha(384));
-//            RegisterJws(new HmacUsingSha(512));
-//            RegisterJws(new RsaUsingSha(256));
-//            RegisterJws(new RsaUsingSha(384));
-//            RegisterJws(new RsaUsingSha(512));          
+            RegisterJws(new HmacUsingSha(256));
+            RegisterJws(new HmacUsingSha(384));
+            RegisterJws(new HmacUsingSha(512));
+            RegisterJws(new RsaUsingSha(256));
+            RegisterJws(new RsaUsingSha(384));
+            RegisterJws(new RsaUsingSha(512));          
         }
 
         public static void RegisterJws(IJwsSigner signer)
@@ -33,11 +33,6 @@ namespace JosePCL
             Ensure.IsNotEmpty(token, "JosePCL.Jwt.Decode(): token expected to be in compact serialization form, not empty, whitespace or null.");
 
             Part[] parts = Compact.Parse(token);
-
-//            if (parts.Length == 5) //encrypted JWT
-//            {
-//                return Decrypt(parts, key);
-//            }
 
             if (parts.Length == 3) //just signed JWT
             {
@@ -70,28 +65,25 @@ namespace JosePCL
 
         public static string Encode(string payload, string signingAlgorithm, object key)
         {
-            throw new Exception("not implemented yet");
-//            Ensure.IsNotEmpty(payload, "JosePCL.Jwt.Encode(): payload expected to be not empty, whitespace or null.");
-//
-//            if (!signers.ContainsKey(signingAlgorithm))
-//                throw new Exception(string.Format("JosePCL.Jwt.Encode(): unknown or unsupported signing algorithm:{0}.", signingAlgorithm));
-//
-//            IJwsSigner signer = signers[signingAlgorithm];
-//
-//            var jwtHeader = new JsonObject
-//            {
-//                {"typ",JsonValue.CreateStringValue("JWT") },
-//                {"alg", JsonValue.CreateStringValue(signingAlgorithm)}
-//            };
-//
-//            var header = Part.New(jwtHeader.Stringify());
-//            var content = Part.New(payload);
-//
-//            var securedInput = Encoding.UTF8.GetBytes(Compact.Serialize(header, content));
-//
-//            var signature = new Part(signer.Sign(securedInput, key)); //TODO: subject to change signer.Sign() to return Part
-//
-//            return Compact.Serialize(header, content, signature);
+            Ensure.IsNotEmpty(payload, "JosePCL.Jwt.Encode(): payload expected to be not empty, whitespace or null.");
+
+            if (!signers.ContainsKey(signingAlgorithm))
+                throw new Exception(string.Format("JosePCL.Jwt.Encode(): unknown or unsupported signing algorithm:{0}.", signingAlgorithm));
+
+            IJwsSigner signer = signers[signingAlgorithm];
+
+            var jwtHeader = new Dictionary<string, string>
+            {
+                {"typ","JWT" },
+                {"alg", signingAlgorithm}
+            };
+
+            var header = Part.New(JsonConvert.SerializeObject(jwtHeader));
+            var content = Part.New(payload);
+            var securedInput = Encoding.UTF8.GetBytes(Compact.Serialize(header, content));
+            var signature = new Part(signer.Sign(securedInput, key)); 
+
+            return Compact.Serialize(header, content, signature);
         }
 
         public static string Encode(string payload, string signingAlgorithm)

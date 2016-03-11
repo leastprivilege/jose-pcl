@@ -34,7 +34,7 @@ namespace JosePCL.Util
             return builder.ToString();
         }
 
-        internal static byte[] Concat(params byte[][] arrays)
+        public static byte[] Concat(params byte[][] arrays)
         {
             byte[] result = new byte[arrays.Sum(a => (a == null) ? 0 : a.Length)];
             int offset = 0;
@@ -163,7 +163,7 @@ namespace JosePCL.Util
                 : new[] { (byte)(_value & 0xFF), (byte)((_value >> 8) & 0xFF), (byte)((_value >> 16) & 0xFF), (byte)((_value >> 24) & 0xFF) };
         }
 
-        internal static byte[][] Slice(byte[] array, int count)
+        public static byte[][] Slice(byte[] array, int count)
         {
             Ensure.MinValue(count, 1, "Arrays.Slice() expects count to be above zero, but was {0}", count);
             Ensure.Divisible(array.Length, count, "Arrays.Slice() expects array length to be divisible by {0}", count);
