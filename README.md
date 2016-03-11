@@ -19,7 +19,7 @@ Attempt to re-implement portion of [jose-rt](https://github.com/dvsekhvalnov/jos
 not yet.
 
 ### Manual
-Grab source and compile yourself or download **jose-pcl.0.0.1.nupkg** from source tree
+Grab source and compile yourself or download [jose-pcl.0.0.1.nupkg](https://github.com/dvsekhvalnov/jose-pcl/blob/master/jose-pcl.0.0.1.nupkg) from source tree
 
 ## Usage
 ### Creating Plaintext (unprotected) Tokens
